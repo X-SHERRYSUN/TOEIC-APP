@@ -252,48 +252,48 @@ function Upload() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="text-5xl">📤</div>
-        <h1 className="text-3xl font-bold text-primary-800">Upload New Question</h1>
-        <p className="text-lg text-primary-600">
+        <div className="text-4xl sm:text-5xl">📤</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">Upload New Question</h1>
+        <p className="text-base sm:text-lg text-primary-600 px-4">
           Add a TOEIC question to your mistake book and build your vocabulary!
         </p>
       </div>
 
       {/* Upload Tabs */}
       <div className="card">
-        <div className="flex space-x-1 mb-6 bg-primary-100 p-1 rounded-xl">
+        <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-1 mb-6 bg-primary-100 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab('image')}
-            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
+            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-2 sm:px-4 rounded-lg font-medium transition-all ${
               activeTab === 'image'
                 ? 'bg-white text-primary-700 shadow-soft'
                 : 'text-primary-600 hover:text-primary-700'
             }`}
           >
-            <Image className="w-5 h-5" />
-            <span>📷 Image Upload (Real OCR)</span>
+            <Image className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">📷 Image Upload</span>
           </button>
           <button
             onClick={() => setActiveTab('speech')}
-            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
+            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-2 sm:px-4 rounded-lg font-medium transition-all ${
               activeTab === 'speech'
                 ? 'bg-white text-primary-700 shadow-soft'
                 : 'text-primary-600 hover:text-primary-700'
             }`}
           >
-            <Mic className="w-5 h-5" />
-            <span>🎤 Speech Input (Live STT)</span>
+            <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">🎤 Speech Input</span>
           </button>
           <button
             onClick={() => setActiveTab('text')}
-            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
+            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-2 sm:px-4 rounded-lg font-medium transition-all ${
               activeTab === 'text'
                 ? 'bg-white text-primary-700 shadow-soft'
                 : 'text-primary-600 hover:text-primary-700'
             }`}
           >
-            <FileText className="w-5 h-5" />
-            <span>✏️ Type Text</span>
+            <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">✏️ Type Text</span>
           </button>
         </div>
 
@@ -515,13 +515,13 @@ function Upload() {
 
                 {/* Question Details Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Question Type:
                       </label>
                       <div className="space-y-2">
-                        <div className="flex space-x-2">
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                           <select
                             value={questionType}
                             onChange={(e) => setQuestionType(e.target.value)}
@@ -534,7 +534,7 @@ function Upload() {
                           <button
                             type="button"
                             onClick={() => setShowAddType(!showAddType)}
-                            className="btn-secondary px-3 py-2 flex items-center space-x-1"
+                            className="btn-secondary px-3 py-2 flex items-center justify-center space-x-1 w-full sm:w-auto"
                             title="Add new question type"
                           >
                             <Plus className="w-4 h-4" />

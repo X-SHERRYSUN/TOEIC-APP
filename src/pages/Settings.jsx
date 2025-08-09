@@ -128,9 +128,9 @@ function Settings() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="text-5xl">⚙️</div>
-        <h1 className="text-3xl font-bold text-primary-800">Settings</h1>
-        <p className="text-lg text-primary-600">
+        <div className="text-4xl sm:text-5xl">⚙️</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">Settings</h1>
+        <p className="text-base sm:text-lg text-primary-600 px-4">
           Manage your study data and app preferences
         </p>
       </div>
@@ -140,31 +140,31 @@ function Settings() {
         <h2 className="text-xl font-semibold text-primary-800 mb-4 flex items-center">
           📊 Your Study Data
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-primary-50 p-4 rounded-xl">
             <div className="flex items-center space-x-3">
-              <span className="text-2xl">📚</span>
+              <span className="text-xl sm:text-2xl">📚</span>
               <div>
-                <div className="text-xl font-bold text-primary-800">{mistakes.length}</div>
-                <div className="text-primary-600">Mistake entries</div>
+                <div className="text-lg sm:text-xl font-bold text-primary-800">{mistakes.length}</div>
+                <div className="text-sm sm:text-base text-primary-600">Mistake entries</div>
               </div>
             </div>
           </div>
           <div className="bg-secondary-50 p-4 rounded-xl">
             <div className="flex items-center space-x-3">
-              <span className="text-2xl">📖</span>
+              <span className="text-xl sm:text-2xl">📖</span>
               <div>
-                <div className="text-xl font-bold text-secondary-800">{vocabulary.length}</div>
-                <div className="text-secondary-600">Vocabulary words</div>
+                <div className="text-lg sm:text-xl font-bold text-secondary-800">{vocabulary.length}</div>
+                <div className="text-sm sm:text-base text-secondary-600">Vocabulary words</div>
               </div>
             </div>
           </div>
           <div className="bg-purple-50 p-4 rounded-xl">
             <div className="flex items-center space-x-3">
-              <span className="text-2xl">🏷️</span>
+              <span className="text-xl sm:text-2xl">🏷️</span>
               <div>
-                <div className="text-xl font-bold text-purple-800">{questionTypes.length}</div>
-                <div className="text-purple-600">Question types</div>
+                <div className="text-lg sm:text-xl font-bold text-purple-800">{questionTypes.length}</div>
+                <div className="text-sm sm:text-base text-purple-600">Question types</div>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ function Settings() {
               <span>Add New Question Type</span>
             </button>
           ) : (
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
               <input
                 type="text"
                 value={newType}

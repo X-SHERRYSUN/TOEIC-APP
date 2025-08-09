@@ -84,18 +84,18 @@ function VocabularyBook() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="text-5xl">📖</div>
-        <h1 className="text-3xl font-bold text-primary-800">Vocabulary Book</h1>
-        <p className="text-lg text-primary-600">
+        <div className="text-4xl sm:text-5xl">📖</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">Vocabulary Book</h1>
+        <p className="text-base sm:text-lg text-primary-600 px-4">
           Build your vocabulary and master new words!
         </p>
       </div>
 
       {/* Search and Controls */}
       <div className="card">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Search */}
-          <div className="relative">
+          <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -120,7 +120,7 @@ function VocabularyBook() {
           {/* Add New Word Button */}
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="btn-primary flex items-center justify-center space-x-2"
+            className="btn-primary flex items-center justify-center space-x-2 sm:col-span-2 lg:col-span-1"
           >
             <Plus className="w-5 h-5" />
             <span>Add New Word</span>
@@ -131,7 +131,7 @@ function VocabularyBook() {
         {showAddForm && (
           <form onSubmit={handleAddWord} className="mt-6 space-y-4 border-t pt-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Add New Vocabulary Word</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Word *
@@ -170,7 +170,7 @@ function VocabularyBook() {
                 className="input-field h-20 resize-none"
               />
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
               <button type="submit" className="btn-primary">
                 Add Word
               </button>
@@ -187,22 +187,22 @@ function VocabularyBook() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card text-center bg-gradient-to-r from-primary-50 to-primary-100">
-          <div className="text-2xl font-bold text-primary-800">{vocabulary.length}</div>
-          <div className="text-primary-600">Total Words</div>
+          <div className="text-xl sm:text-2xl font-bold text-primary-800">{vocabulary.length}</div>
+          <div className="text-sm sm:text-base text-primary-600">Total Words</div>
         </div>
         <div className="card text-center bg-gradient-to-r from-secondary-50 to-secondary-100">
-          <div className="text-2xl font-bold text-secondary-800">
+          <div className="text-xl sm:text-2xl font-bold text-secondary-800">
             {vocabulary.filter(w => w.category === 'extracted').length}
           </div>
-          <div className="text-secondary-600">Auto-Extracted</div>
+          <div className="text-sm sm:text-base text-secondary-600">Auto-Extracted</div>
         </div>
         <div className="card text-center bg-gradient-to-r from-green-50 to-green-100">
-          <div className="text-2xl font-bold text-green-800">
+          <div className="text-xl sm:text-2xl font-bold text-green-800">
             {vocabulary.filter(w => w.category === 'manual').length}
           </div>
-          <div className="text-green-600">Manually Added</div>
+          <div className="text-sm sm:text-base text-green-600">Manually Added</div>
         </div>
       </div>
 
@@ -220,7 +220,7 @@ function VocabularyBook() {
             }
           </p>
           {vocabulary.length === 0 && (
-            <div className="space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
               <a href="/upload" className="btn-primary">
                 Upload Questions 📤
               </a>
@@ -234,7 +234,7 @@ function VocabularyBook() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortedVocabulary.map((word) => (
             <div key={word.id} className="card hover:shadow-soft-lg transition-shadow group">
               <div className="flex items-start justify-between mb-3">

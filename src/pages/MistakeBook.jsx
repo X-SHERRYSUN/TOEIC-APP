@@ -97,18 +97,18 @@ function MistakeBook() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="text-5xl">📚</div>
-        <h1 className="text-3xl font-bold text-primary-800">Mistake Book</h1>
-        <p className="text-lg text-primary-600">
+        <div className="text-4xl sm:text-5xl">📚</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary-800">Mistake Book</h1>
+        <p className="text-base sm:text-lg text-primary-600 px-4">
           Learn from your mistakes and track your progress!
         </p>
       </div>
 
       {/* Search and Filter Bar */}
       <div className="card">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
-          <div className="relative">
+          <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -155,12 +155,14 @@ function MistakeBook() {
             {hiddenAnswers.size === sortedMistakes.length ? (
               <>
                 <Eye className="w-4 h-4" />
-                <span>Show All</span>
+                <span className="hidden sm:inline">Show All</span>
+                <span className="sm:hidden">Show</span>
               </>
             ) : (
               <>
                 <EyeOff className="w-4 h-4" />
-                <span>Hide All</span>
+                <span className="hidden sm:inline">Hide All</span>
+                <span className="sm:hidden">Hide</span>
               </>
             )}
           </button>
@@ -168,26 +170,26 @@ function MistakeBook() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card text-center bg-gradient-to-r from-primary-50 to-primary-100">
-          <div className="text-2xl font-bold text-primary-800">{mistakes.length}</div>
-          <div className="text-primary-600">Total Mistakes</div>
+          <div className="text-xl sm:text-2xl font-bold text-primary-800">{mistakes.length}</div>
+          <div className="text-xs sm:text-sm text-primary-600">Total Mistakes</div>
         </div>
         <div className="card text-center bg-gradient-to-r from-secondary-50 to-secondary-100">
-          <div className="text-2xl font-bold text-secondary-800">{filteredMistakes.length}</div>
-          <div className="text-secondary-600">Filtered Results</div>
+          <div className="text-xl sm:text-2xl font-bold text-secondary-800">{filteredMistakes.length}</div>
+          <div className="text-xs sm:text-sm text-secondary-600">Filtered Results</div>
         </div>
         <div className="card text-center bg-gradient-to-r from-purple-50 to-purple-100">
-          <div className="text-2xl font-bold text-purple-800">
+          <div className="text-xl sm:text-2xl font-bold text-purple-800">
             {new Set(mistakes.map(m => m.questionType)).size}
           </div>
-          <div className="text-purple-600">Question Types</div>
+          <div className="text-xs sm:text-sm text-purple-600">Question Types</div>
         </div>
         <div className="card text-center bg-gradient-to-r from-green-50 to-green-100">
-          <div className="text-2xl font-bold text-green-800">
+          <div className="text-xl sm:text-2xl font-bold text-green-800">
             {hiddenAnswers.size}
           </div>
-          <div className="text-green-600">Answers Hidden</div>
+          <div className="text-xs sm:text-sm text-green-600">Answers Hidden</div>
         </div>
       </div>
 
