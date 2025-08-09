@@ -1,0 +1,33 @@
+{
+  "questions": [
+    {
+      "id": "1754707455765634pnuugs",
+      "questionText": "What is the capital of Japan?",
+      "correctAnswer": "Tokyo",
+      "questionType": "Vocabulary",
+      "mistakeReason": "vocabulary",
+      "userNotes": "Test question for API verification",
+      "source": "api-test",
+      "createdAt": "2025-08-09T02:44:15.770Z",
+      "updatedAt": "2025-08-09T02:44:15.770Z"
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "1754707455800tpkfc9inu",
+      "word": "capital",
+      "definition": "The most important city or town of a country or region",
+      "example": "Tokyo is the capital of Japan",
+      "category": "general",
+      "createdAt": "2025-08-09T02:44:15.800Z",
+      "updatedAt": "2025-08-09T02:44:15.800Z"
+    }
+  ],
+  "questionTypes": [
+    "Grammar",
+    "Sentence Pattern",
+    "Vocabulary",
+    "Reading Comprehension",
+    "Listening"
+  ]
+}
