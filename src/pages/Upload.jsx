@@ -11,6 +11,7 @@ function Upload() {
   const [questionText, setQuestionText] = useState('')
   const [correctAnswer, setCorrectAnswer] = useState('')
   const [userNotes, setUserNotes] = useState('')
+  const [keyPoints, setKeyPoints] = useState('')
   const [questionType, setQuestionType] = useState(questionTypes[0] || 'Grammar')
   const [mistakeReason, setMistakeReason] = useState('')
   const [processingOCR, setProcessingOCR] = useState(false)
@@ -326,6 +327,7 @@ function Upload() {
       questionType,
       mistakeReason,
       userNotes,
+      keyPoints,
       createdAt: new Date().toISOString(),
       source: activeTab
     }
@@ -341,6 +343,7 @@ function Upload() {
     setQuestionText('')
     setCorrectAnswer('')
     setUserNotes('')
+    setKeyPoints('')
     setMistakeReason('')
     setTranscript('')
     setFinalTranscript('')
@@ -728,6 +731,29 @@ function Upload() {
                   />
                   <div className="mt-2 text-sm text-gray-600">
                     💡 Include both the answer choice and explanation to help with future review
+                  </div>
+                </div>
+
+                {/* Key Points Field */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <span className="text-lg mr-2">🔑</span>
+                    Key Points to Remember
+                  </label>
+                  <textarea
+                    value={keyPoints}
+                    onChange={(e) => setKeyPoints(e.target.value)}
+                    placeholder="Note down grammar rules, phrases, vocabulary, or concepts you're not familiar with...
+
+Examples:
+• Grammar: Present perfect vs. simple past
+• Vocabulary: 'feasible' means possible/practical
+• Phrase: 'in lieu of' means instead of
+• Pattern: Subject + verb + that clause"
+                    className="input-field h-32 resize-none"
+                  />
+                  <div className="mt-2 text-sm text-gray-600">
+                    📝 Capture important learning points: grammar rules, new vocabulary, phrases, or concepts that confused you
                   </div>
                 </div>
 

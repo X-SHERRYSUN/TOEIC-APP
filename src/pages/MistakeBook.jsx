@@ -12,7 +12,8 @@ function MistakeBook() {
   // Filter and search logic
   const filteredMistakes = mistakes.filter(mistake => {
     const matchesSearch = mistake.questionText.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         mistake.userNotes?.toLowerCase().includes(searchTerm.toLowerCase())
+                         mistake.userNotes?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         mistake.keyPoints?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesFilter = filterType === 'all' || mistake.questionType === filterType
     return matchesSearch && matchesFilter
   })
@@ -313,6 +314,21 @@ function MistakeBook() {
                       </pre>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Key Points */}
+              {mistake.keyPoints && (
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
+                    <span className="text-lg mr-2">🔑</span>
+                    Key Learning Points:
+                  </h4>
+                  <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm">
+                      {mistake.keyPoints}
+                    </pre>
+                  </div>
                 </div>
               )}
 
