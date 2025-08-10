@@ -32,6 +32,7 @@ function Upload() {
   const [cameraStream, setCameraStream] = useState(null)
   const [cameraError, setCameraError] = useState(null)
   const [capturedImage, setCapturedImage] = useState(null)
+  const [cameraLoading, setCameraLoading] = useState(false)
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
 
@@ -111,21 +112,18 @@ function Upload() {
   // Camera functions
   const startCamera = async () => {
     setCameraError(null)
+    setCameraLoading(true)
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment', // Use back camera on mobile devices
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         }
       })
       setCameraStream(stream)
       setShowCamera(true)
-      
-      // Set video stream
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-      }
+      setCameraLoading(false)
     } catch (error) {
       console.error('Camera access error:', error)
       let errorMessage = 'Failed to access camera. '
@@ -141,6 +139,7 @@ function Upload() {
       }
       
       setCameraError(errorMessage)
+      setCameraLoading(false)
     }
   }
 
@@ -152,6 +151,7 @@ function Upload() {
     setShowCamera(false)
     setCapturedImage(null)
     setCameraError(null)
+    setCameraLoading(false)
   }
 
   const capturePhoto = () => {
@@ -207,6 +207,20 @@ function Upload() {
       setOcrProgress(0)
     }
   }
+
+  // Setup video stream when camera is shown
+  useEffect(() => {
+    if (showCamera && cameraStream && videoRef.current) {
+      const video = videoRef.current
+      video.srcObject = cameraStream
+      video.onloadedmetadata = () => {
+        video.play().catch(err => {
+          console.error('Video play error:', err)
+          setCameraError('Failed to start video preview. Please try again.')
+        })
+      }
+    }
+  }, [showCamera, cameraStream])
 
   // Cleanup camera on component unmount
   useEffect(() => {
@@ -421,11 +435,20 @@ function Upload() {
                     <div className="flex-1 max-w-xs">
                       <button
                         onClick={startCamera}
-                        disabled={processingOCR}
-                        className={`btn-secondary inline-flex items-center justify-center space-x-2 w-full ${processingOCR ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={processingOCR || cameraLoading}
+                        className={`btn-secondary inline-flex items-center justify-center space-x-2 w-full ${(processingOCR || cameraLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <Camera className="w-5 h-5" />
-                        <span>Take Photo</span>
+                        {cameraLoading ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Starting Camera...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Camera className="w-5 h-5" />
+                            <span>Take Photo</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -454,7 +477,15 @@ function Upload() {
                       ref={videoRef}
                       autoPlay
                       playsInline
+                      muted
                       className="w-full h-full object-cover"
+                      onLoadedData={() => {
+                        console.log('Video loaded successfully')
+                      }}
+                      onError={(e) => {
+                        console.error('Video error:', e)
+                        setCameraError('Video preview failed. Please try again.')
+                      }}
                     />
                     
                     {/* Camera overlay */}
