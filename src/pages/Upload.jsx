@@ -466,13 +466,24 @@ function Upload() {
                   </div>
                 </div>
               ) : (
-                <div className="border-2 border-primary-300 rounded-2xl p-6 bg-gray-50">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center space-x-2">
-                    <Camera className="w-5 h-5" />
-                    <span>Camera Preview</span>
-                  </h3>
+                <div className="fixed inset-0 z-50 bg-black flex flex-col">
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-4 bg-black/80 text-white relative z-10">
+                    <h3 className="text-lg font-semibold flex items-center space-x-2">
+                      <Camera className="w-5 h-5" />
+                      <span>Camera Preview</span>
+                    </h3>
+                    <button
+                      onClick={stopCamera}
+                      className="text-white hover:text-gray-300 p-2"
+                      title="Close Camera"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
                   
-                  <div className="relative bg-black rounded-xl overflow-hidden mb-4" style={{aspectRatio: '16/9'}}>
+                  {/* Video Preview - Full Screen */}
+                  <div className="flex-1 relative">
                     <video
                       ref={videoRef}
                       autoPlay
@@ -488,41 +499,45 @@ function Upload() {
                       }}
                     />
                     
-                    {/* Camera overlay */}
-                    <div className="absolute inset-0 border-2 border-white border-dashed opacity-30 m-4 rounded-lg"></div>
-                    
-                    {/* Capture button overlay */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                      <button
-                        onClick={capturePhoto}
-                        className="bg-white text-gray-800 hover:bg-gray-100 rounded-full p-4 shadow-lg transition-all"
-                        title="Capture Photo"
-                      >
-                        <Camera className="w-8 h-8" />
-                      </button>
+                    {/* Camera overlay for document positioning */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="border-2 border-white border-dashed opacity-50 w-5/6 h-2/3 rounded-lg"></div>
                     </div>
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <button
-                      onClick={capturePhoto}
-                      className="btn-primary flex items-center justify-center space-x-2"
-                    >
-                      <Camera className="w-5 h-5" />
-                      <span>Capture Photo</span>
-                    </button>
                     
-                    <button
-                      onClick={stopCamera}
-                      className="btn-secondary flex items-center justify-center space-x-2"
-                    >
-                      <CameraOff className="w-5 h-5" />
-                      <span>Cancel</span>
-                    </button>
-                  </div>
-                  
-                  <div className="mt-4 text-sm text-gray-600 text-center">
-                    <p>💡 Position the question text within the dashed border for best results</p>
+                    {/* Bottom controls */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                      <div className="flex items-center justify-center space-x-8">
+                        <button
+                          onClick={stopCamera}
+                          className="bg-gray-600 hover:bg-gray-700 text-white rounded-full p-4 shadow-lg transition-all"
+                          title="Cancel"
+                        >
+                          <X className="w-6 h-6" />
+                        </button>
+                        
+                        <button
+                          onClick={capturePhoto}
+                          className="bg-white text-gray-800 hover:bg-gray-100 rounded-full p-6 shadow-lg transition-all transform hover:scale-105"
+                          title="Capture Photo"
+                        >
+                          <Camera className="w-8 h-8" />
+                        </button>
+                        
+                        <button
+                          onClick={capturePhoto}
+                          className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-all"
+                          title="Capture"
+                        >
+                          📸
+                        </button>
+                      </div>
+                      
+                      <div className="mt-4 text-center">
+                        <p className="text-white text-sm opacity-80">
+                          💡 Position the question text within the dashed border
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
