@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Upload as UploadIcon, Image, Mic, FileText, Send, Loader2, Plus, X, CheckCircle, MicOff, RefreshCw } from 'lucide-react'
+import { Upload as UploadIcon, Image, Mic, FileText, Send, Loader2, Plus, X, CheckCircle, MicOff, RefreshCw, Camera, CameraOff } from 'lucide-react'
 import { useStudy } from '../context/StudyContext'
 import { createWorker } from 'tesseract.js'
 
@@ -26,6 +26,14 @@ function Upload() {
   const [speechError, setSpeechError] = useState(null)
   const [retryCount, setRetryCount] = useState(0)
   const recognitionRef = useRef(null)
+  
+  // Camera states
+  const [showCamera, setShowCamera] = useState(false)
+  const [cameraStream, setCameraStream] = useState(null)
+  const [cameraError, setCameraError] = useState(null)
+  const [capturedImage, setCapturedImage] = useState(null)
+  const videoRef = useRef(null)
+  const canvasRef = useRef(null)
 
   // Initialize speech recognition
   useEffect(() => {
@@ -98,11 +106,79 @@ function Upload() {
     }
   }
 
-  // Real OCR function using Tesseract.js
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0]
-    if (!file) return
 
+
+  // Camera functions
+  const startCamera = async () => {
+    setCameraError(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment', // Use back camera on mobile devices
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        }
+      })
+      setCameraStream(stream)
+      setShowCamera(true)
+      
+      // Set video stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+      }
+    } catch (error) {
+      console.error('Camera access error:', error)
+      let errorMessage = 'Failed to access camera. '
+      
+      if (error.name === 'NotAllowedError') {
+        errorMessage += 'Please allow camera access in your browser settings.'
+      } else if (error.name === 'NotFoundError') {
+        errorMessage += 'No camera found on this device.'
+      } else if (error.name === 'NotReadableError') {
+        errorMessage += 'Camera is being used by another application.'
+      } else {
+        errorMessage += 'Please check your camera and try again.'
+      }
+      
+      setCameraError(errorMessage)
+    }
+  }
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop())
+      setCameraStream(null)
+    }
+    setShowCamera(false)
+    setCapturedImage(null)
+    setCameraError(null)
+  }
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current
+      const canvas = canvasRef.current
+      const context = canvas.getContext('2d')
+      
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      
+      // Draw video frame to canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height)
+      
+      // Convert canvas to blob and process with OCR
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          setCapturedImage(blob)
+          await processImageWithOCR(blob)
+          stopCamera()
+        }
+      }, 'image/jpeg', 0.9)
+    }
+  }
+
+  const processImageWithOCR = async (imageFile) => {
     setProcessingOCR(true)
     setOcrProgress(0)
     
@@ -115,7 +191,7 @@ function Upload() {
         }
       })
 
-      const { data: { text } } = await worker.recognize(file)
+      const { data: { text } } = await worker.recognize(imageFile)
       await worker.terminate()
 
       if (text.trim()) {
@@ -130,6 +206,20 @@ function Upload() {
       setProcessingOCR(false)
       setOcrProgress(0)
     }
+  }
+
+  // Cleanup camera on component unmount
+  useEffect(() => {
+    return () => {
+      stopCamera()
+    }
+  }, [])
+
+  // Update existing handleImageUpload to use the new OCR function
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+    await processImageWithOCR(file)
   }
 
   // Speech recognition functions
@@ -300,32 +390,114 @@ function Upload() {
         {/* Upload Content */}
         <div className="space-y-6">
           {activeTab === 'image' && (
-            <div className="text-center">
-              <div className="border-2 border-dashed border-primary-300 rounded-2xl p-8 hover:border-primary-400 transition-colors">
-                <UploadIcon className="w-12 h-12 mx-auto text-primary-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Upload Question Image</h3>
-                <p className="text-gray-600 mb-4">
-                  Take a photo or upload an image of your TOEIC question - now with real OCR!
-                </p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id="image-upload"
-                  disabled={processingOCR}
-                />
-                <label
-                  htmlFor="image-upload"
-                  className={`btn-primary cursor-pointer inline-block ${processingOCR ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {processingOCR ? 'Processing...' : 'Choose Image'}
-                </label>
-                <div className="mt-4 text-sm text-gray-500">
-                  <p>📝 Supported formats: JPG, PNG, GIF, BMP</p>
-                  <p>💡 For best results, use clear, high-contrast images</p>
+            <div className="text-center space-y-6">
+              {!showCamera ? (
+                <div className="border-2 border-dashed border-primary-300 rounded-2xl p-8 hover:border-primary-400 transition-colors">
+                  <UploadIcon className="w-12 h-12 mx-auto text-primary-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Upload or Take Question Image</h3>
+                  <p className="text-gray-600 mb-6">
+                    Choose to upload an existing image or take a new photo of your TOEIC question
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div className="flex-1 max-w-xs">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="image-upload"
+                        disabled={processingOCR}
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className={`btn-primary cursor-pointer inline-flex items-center justify-center space-x-2 w-full ${processingOCR ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <UploadIcon className="w-5 h-5" />
+                        <span>{processingOCR ? 'Processing...' : 'Upload Image'}</span>
+                      </label>
+                    </div>
+                    
+                    <div className="flex-1 max-w-xs">
+                      <button
+                        onClick={startCamera}
+                        disabled={processingOCR}
+                        className={`btn-secondary inline-flex items-center justify-center space-x-2 w-full ${processingOCR ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <Camera className="w-5 h-5" />
+                        <span>Take Photo</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {cameraError && (
+                    <div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4">
+                      <p className="text-red-700 text-sm">{cameraError}</p>
+                    </div>
+                  )}
+                  
+                  <div className="mt-6 text-sm text-gray-500 space-y-1">
+                    <p>📝 Supported formats: JPG, PNG, GIF, BMP</p>
+                    <p>💡 For best results, use clear, high-contrast images</p>
+                    <p>📱 Camera uses back camera on mobile devices</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="border-2 border-primary-300 rounded-2xl p-6 bg-gray-50">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center space-x-2">
+                    <Camera className="w-5 h-5" />
+                    <span>Camera Preview</span>
+                  </h3>
+                  
+                  <div className="relative bg-black rounded-xl overflow-hidden mb-4" style={{aspectRatio: '16/9'}}>
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Camera overlay */}
+                    <div className="absolute inset-0 border-2 border-white border-dashed opacity-30 m-4 rounded-lg"></div>
+                    
+                    {/* Capture button overlay */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                      <button
+                        onClick={capturePhoto}
+                        className="bg-white text-gray-800 hover:bg-gray-100 rounded-full p-4 shadow-lg transition-all"
+                        title="Capture Photo"
+                      >
+                        <Camera className="w-8 h-8" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button
+                      onClick={capturePhoto}
+                      className="btn-primary flex items-center justify-center space-x-2"
+                    >
+                      <Camera className="w-5 h-5" />
+                      <span>Capture Photo</span>
+                    </button>
+                    
+                    <button
+                      onClick={stopCamera}
+                      className="btn-secondary flex items-center justify-center space-x-2"
+                    >
+                      <CameraOff className="w-5 h-5" />
+                      <span>Cancel</span>
+                    </button>
+                  </div>
+                  
+                  <div className="mt-4 text-sm text-gray-600 text-center">
+                    <p>💡 Position the question text within the dashed border for best results</p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Hidden canvas for image capture */}
+              <canvas ref={canvasRef} className="hidden" />
               {processingOCR && (
                 <div className="mt-4 space-y-3">
                   <div className="flex items-center justify-center space-x-2 text-primary-600">
@@ -639,7 +811,11 @@ function Upload() {
         <ul className="space-y-2 text-primary-700">
           <li className="flex items-start space-x-2">
             <span>📸</span>
-            <span>For images: Use clear, well-lit photos with good contrast</span>
+            <span>For images: Use clear, well-lit photos with good contrast. Camera automatically uses back camera on mobile devices</span>
+          </li>
+          <li className="flex items-start space-x-2">
+            <span>📷</span>
+            <span>Camera capture: Position text within the dashed border and tap capture when ready</span>
           </li>
           <li className="flex items-start space-x-2">
             <span>🎤</span>
