@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Home, Upload, BookOpen, Book, Settings, Menu, X } from 'lucide-react'
+import { useStudy } from '../context/StudyContext'
 
 function Layout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { mistakes, vocabulary } = useStudy()
   
   const navItems = [
     { path: '/', icon: Home, label: 'Home', emoji: '🏠' },
@@ -73,11 +75,11 @@ function Layout({ children }) {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-primary-700">Mistakes logged:</span>
-                <span className="font-semibold text-primary-800">0</span>
+                <span className="font-semibold text-primary-800">{mistakes.length}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-primary-700">Vocabulary words:</span>
-                <span className="font-semibold text-primary-800">0</span>
+                <span className="font-semibold text-primary-800">{vocabulary.length}</span>
               </div>
             </div>
           </div>
@@ -119,11 +121,11 @@ function Layout({ children }) {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-primary-700">Mistakes logged:</span>
-                      <span className="font-semibold text-primary-800">0</span>
+                      <span className="font-semibold text-primary-800">{mistakes.length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-primary-700">Vocabulary words:</span>
-                      <span className="font-semibold text-primary-800">0</span>
+                      <span className="font-semibold text-primary-800">{vocabulary.length}</span>
                     </div>
                   </div>
                 </div>
